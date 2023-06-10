@@ -1,0 +1,47 @@
+<html>
+<head>
+  <title>Create Family Tree</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Create Family Tree</h1>
+
+  <form action="/family-tree" method="post">
+    <label for="personName">Person's Name:</label>
+    <input type="text" id="personName" name="personName" placeholder="Enter person's name" required>
+
+    <label for="motherName">Mother's Name:</label>
+    <input type="text" id="motherName" name="motherName" placeholder="Enter mother's name">
+
+    <label for="fatherName">Father's Name:</label>
+    <input type="text" id="fatherName" name="fatherName" placeholder="Enter father's name">
+
+    <button type="submit">Create</button>
+  </form>
+</body>
+</html>
