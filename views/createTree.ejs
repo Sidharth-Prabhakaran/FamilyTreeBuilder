@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>Create Family Tree</title>
@@ -6,42 +7,119 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
     }
 
     form {
-      max-width: 400px;
-      margin: 0 auto;
+      max-width: 300px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     label {
       display: block;
       margin-bottom: 10px;
+      font-weight: bold;
     }
 
     input[type="text"] {
       width: 100%;
-      padding: 5px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
     }
 
     button {
-      padding: 10px 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
     }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+    .navbar {
+      background-color: #333;
+      padding: 10px;
+      color: #fff;
+    }
+
+    .navbar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .navbar li {
+      margin-right: 10px;
+    }
+
+    .navbar li a {
+      display: inline-block;
+      padding: 10px 20px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .navbar li a.active {
+      background-color: #ccc;
+      border-radius: 5px;
+    }
+
+    .logout-form {
+      display: inline-block;
+    }
+    .logout-button {
+      padding: 10px;
+      background-color: #ccc;
+      border-radius: 5px;
+}
+    
   </style>
 </head>
 <body>
+  <div class="navbar">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/profile">Your Trees</a></li>
+        <li><a href="/createTree">Create Tree</a></li>
+      <li>
+        <form class="logout-form" action="/logout?_method=DELETE" method="post">
+          <button type="submit" class="logout-button">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </div>
   <h1>Create Family Tree</h1>
-
-  <form action="/family-tree" method="post">
-    <label for="personName">Person's Name:</label>
-    <input type="text" id="personName" name="personName" placeholder="Enter person's name" required>
-
-    <label for="motherName">Mother's Name:</label>
-    <input type="text" id="motherName" name="motherName" placeholder="Enter mother's name">
-
-    <label for="fatherName">Father's Name:</label>
-    <input type="text" id="fatherName" name="fatherName" placeholder="Enter father's name">
-
-    <button type="submit">Create</button>
+  <form method="POST" action="/createTree">
+    <div>
+      <label for="treeName">Family Tree Name:</label>
+      <input type="text" id="treeName" name="treeName" placeholder="Enter a unique name" required>
+    </div>
+    <button type="submit">Create Tree</button>
+    <% if (typeof errorMessage !== 'undefined') { %>
+      <p class="error"><%= errorMessage %></p>
+    <% } %>
   </form>
 </body>
 </html>

@@ -57,8 +57,20 @@
       </li>
     </ul>
   </div>
-  <h1>Below are your Trees</h1>
-
+  <h1>Below are The Trees with their appropriate access</h1>
+  <ul>
+    <% for (let tree of coaches) { %>
+      <li>
+        <%= tree.tree_name %>
+        <% if (tree.access_level === 'view') { %>
+          <a href="/tree/<%= tree.id %>/view">View</a>
+        <% } else if (tree.access_level === 'edit') { %>
+          <a href="/tree/<%= tree.id %>/edit">Edit</a>
+          <a href="/tree/<%= tree.id %>/delete">Delete</a>
+        <% } %>
+      </li>
+    <% } %>
+  </ul>
 
  
 </body>

@@ -1,17 +1,83 @@
-<H1>Register</H1>
-<form action="/register" method="POST">
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      max-width: 300px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Register</h1>
+  <form action="/register" method="POST">
     <div>
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" placeholder="Username" required>
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username" placeholder="Username" required>
     </div>
     <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="Email" required>
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" placeholder="Email" required>
     </div>
     <div>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="Password" required>
+      <label for="password">Password:</label>
+      <input type="password" name="password" id="password" placeholder="Password" required>
     </div>
     <button type="submit">Register</button>
-</form>
-<a href="/login">Login</a>
+  </form>
+  <a href="/login">Login</a>
+</body>
+</html>

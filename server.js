@@ -17,8 +17,8 @@ initializePassport(passport, email => users.find(user => user.email === email), 
 
 
 
-// var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'Mother@123'));
-// var ses = driver.session();
+var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'Mother@123'));
+
 
 var mysql = require('mysql');
 
@@ -55,8 +55,6 @@ connection.connect((err) => {
       password: row.password
       // Add more properties as needed
     }));
-  
-    console.log('Users:', users);
   });
   
  
@@ -77,13 +75,27 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
+let coaches = [];
 
 app.get('/', checkAuthenticated, (req, res) => {
-  res.render('index.ejs', { name: req.user.name });
+  connection.query('select tree_name,access_level from user_trees where user_id = ?', [req.user.id], function (error, results, fields) {
+    if (error) throw error;
+    coaches = results;
+    console.log(coaches);
+    res.render('index.ejs', { name: req.user.name, coaches: coaches});
+    connection.end();
+  });
+
+
+  
+  
+  // res.render('index.ejs', { name: req.user.name});
+  console.log(req.user.id);
 });
 
 app.get('/profile', checkAuthenticated, (req, res) => {
-    res.render('profile.ejs', { name: req.user.name });
+  
+    res.render('profile.ejs', { name: req.user.name, coaches: coaches  });
     });
 
     app.get('/createTree', checkAuthenticated, (req, res) => {
@@ -92,16 +104,7 @@ app.get('/profile', checkAuthenticated, (req, res) => {
 
 app.get('/login', checkNotAuthenticated,(req, res) => {
     res.render('login.ejs');
-    // ses.run('MATCH (n:COACH) RETURN n LIMIT 25')
-    // .then(function(result){
-    //     result.records.forEach(function(record){
-    //         console.log(record._fields[0].properties.name);
-    //     });
-    // })
-    // .catch(function(err){
-    //     console.log(err);
-    // }
-    // );
+   
     });
 
 app.post('/login',checkNotAuthenticated, passport.authenticate('local', {
@@ -165,5 +168,42 @@ function checkNotAuthenticated(req, res, next){
     next();
     }
 
+
+app.post('/createTree', (req, res) => {
+  const { treeName } = req.body;
+  connection.query('SELECT COUNT(*) AS count FROM user_trees WHERE tree_name = ?', [treeName], (error, results) => {
+    if (error) {
+      console.error('Error checking tree name uniqueness:', error);
+      res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
+    } else {
+      const count = results[0].count;
+
+      if (count > 0) {
+        res.render('createTree', { errorMessage: 'The tree name is already taken. Please enter a unique name.' });
+      } else {
+        // Insert the tree name into the user-tree database
+        connection.query('INSERT INTO user_trees (user_id, tree_name, access_level) VALUES (?, ?, ?)', [req.user.id, treeName, 'edit'], async (error) => {
+          if (error) {
+            console.error('Error inserting tree name:', error);
+            res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
+          } else {
+            
+            const ses = driver.session();
+            try {
+               await ses.run('CREATE (n:Tree {name: $treeName})', { treeName });
+              res.redirect('/createFamily');
+            } catch (error) {
+              console.error('Error creating starting node in Neo4j:', error);
+              res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
+            } finally {
+               await ses.close();
+            }
+            // res.redirect('/createTree');
+          }
+        });
+      }
+    }
+  });
+});
 
 app.listen(3000);

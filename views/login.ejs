@@ -1,22 +1,4 @@
-<!-- <H1>Login</H1>
-
-<% if (messages.error) { %>
-    <%= messages.error %>
-<% } %>
-
-<form action="/login" method="POST">
-    <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="Email" required>
-    </div>
-    <div>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="Password" required>
-    </div>
-    <button type="submit">Login</button>
-</form>
-<a href="/register">Register</a> -->
-
+<!DOCTYPE html>
 <html>
 <head>
   <title>Family Tree Builder</title>
@@ -80,11 +62,13 @@
 <body>
   <h1>Family Tree Builder</h1>
   <% if (messages.error) { %>
-    <%= messages.error %>
-<% } %>
+    <div class="error">
+      <%= messages.error %>
+    </div>
+  <% } %>
   <form method="POST" action="/login">
     <div>
-      <label for="username">Username:</label>
+      <label for="email">Username:</label>
       <input type="text" id="email" name="email" required>
     </div>
     <div>
@@ -95,6 +79,6 @@
       <button type="submit">Login</button>
     </div>
   </form>
+  <p>Don't have an account? <a href="/register">Register</a></p>
 </body>
 </html>
-
