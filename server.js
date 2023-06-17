@@ -46,6 +46,8 @@ connection.connect((err) => {
       console.error('Error executing query:', error);
       return;
     }
+
+    
   
     // Format the results as an array of user objects
   users = results.map(row => ({
@@ -56,6 +58,8 @@ connection.connect((err) => {
       // Add more properties as needed
     }));
   });
+
+
   
  
 
@@ -78,23 +82,19 @@ app.use(methodOverride('_method'));
 let coaches = [];
 
 app.get('/', checkAuthenticated, (req, res) => {
-  connection.query('select tree_name,access_level from user_trees where user_id = ?', [req.user.id], function (error, results, fields) {
-    if (error) throw error;
-    coaches = results;
-    console.log(coaches);
-    res.render('index.ejs', { name: req.user.name, coaches: coaches});
-    connection.end();
+ 
+  
+    res.render('index.ejs', { name: req.user.name});
+    // connection.end();
   });
 
 
-  
-  
-  // res.render('index.ejs', { name: req.user.name});
-  console.log(req.user.id);
-});
-
 app.get('/profile', checkAuthenticated, (req, res) => {
-  
+
+  connection.query('select tree_name,access_level from user_trees where user_id = ?', [req.user.id], function (error, results, fields) {
+    if (error) throw error;
+    coaches = results;
+    console.log(coaches);})
     res.render('profile.ejs', { name: req.user.name, coaches: coaches  });
     });
 
@@ -150,6 +150,7 @@ app.delete('/logout', (req, res) => {
     req.logOut(req.user, (err) => {
         if(err) return next(err);
         });
+        
     res.redirect('/login');
     })
 
@@ -171,6 +172,7 @@ function checkNotAuthenticated(req, res, next){
 
 app.post('/createTree', (req, res) => {
   const { treeName } = req.body;
+  
   connection.query('SELECT COUNT(*) AS count FROM user_trees WHERE tree_name = ?', [treeName], (error, results) => {
     if (error) {
       console.error('Error checking tree name uniqueness:', error);
@@ -191,11 +193,13 @@ app.post('/createTree', (req, res) => {
             const ses = driver.session();
             try {
                await ses.run('CREATE (n:Tree {name: $treeName})', { treeName });
+               
               res.redirect('/createFamily');
             } catch (error) {
               console.error('Error creating starting node in Neo4j:', error);
               res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
             } finally {
+              // connection.end();
                await ses.close();
             }
             // res.redirect('/createTree');
