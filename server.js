@@ -170,6 +170,32 @@ function checkNotAuthenticated(req, res, next){
     }
 
 
+app.post('/createfamily', (req, res) => {
+  const name = req.body.name;
+  const dob = req.body.dob;
+  const familyName = req.session.familyName;
+
+  const session = driver.session();
+  const query = 'CREATE (p:Person {name: $name, dob: $dob, familyName: $familyName})';
+  const params = { name, dob, familyName };
+
+  session
+    .run(query, params)
+    .then(() => {
+      session.close();
+      console.log('Node created');
+      res.redirect('/createfamily');
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send('Error creating node');
+    });
+});
+
+app.get('/createfamily', (req, res) => {
+   res.render('createFamily.ejs');
+});
+
 app.post('/createTree', (req, res) => {
   const { treeName } = req.body;
   
@@ -193,8 +219,9 @@ app.post('/createTree', (req, res) => {
             const ses = driver.session();
             try {
                await ses.run('CREATE (n:Tree {name: $treeName})', { treeName });
+               req.session.familyName = treeName;
                
-              res.redirect('/createFamily');
+              res.redirect('/createfamily');
             } catch (error) {
               console.error('Error creating starting node in Neo4j:', error);
               res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
@@ -209,5 +236,22 @@ app.post('/createTree', (req, res) => {
     }
   });
 });
+
+app.get('/createRelationship', (req, res) => {
+  const query = 'match (n:Person {familyName:"Tree1"}) return n';
+  const session = driver.session();
+  session.run(query)
+    .then(result => {
+      const people = result.records.map(record => record.get('n').properties);
+      console.log(people);
+      res.render('createRelationship.ejs', { people });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send('Error retrieving people');
+    })
+    .finally(() => session.close());
+});
+
 
 app.listen(3000);
