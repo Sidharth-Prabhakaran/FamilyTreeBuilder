@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Family Tree Builder</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -68,7 +69,7 @@
   <% } %>
   <form method="POST" action="/login">
     <div>
-      <label for="email">Username:</label>
+      <label for="email">Email:</label>
       <input type="text" id="email" name="email" required>
     </div>
     <div>
@@ -77,8 +78,9 @@
     </div>
     <div>
       <button type="submit">Login</button>
-    </div>
+    </div><br
+    <p>Don't have an account? <a href="/register">Register</a></p>
   </form>
-  <p>Don't have an account? <a href="/register">Register</a></p>
+  
 </body>
 </html>

@@ -1,6 +1,7 @@
 <html>
 <head>
   <title>Your Trees</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -58,19 +59,31 @@
     </ul>
   </div>
   <h1>Below are The Trees with their appropriate access</h1>
-  <ul>
-    <% for (let tree of coaches) { %>
-      <li>
-        <%= tree.tree_name %>
-        <% if (tree.access_level === 'view') { %>
-          <a href="/tree/<%= tree.id %>/view">View</a>
-        <% } else if (tree.access_level === 'edit') { %>
-          <a href="/tree/<%= tree.id %>/edit">Edit</a>
-          <a href="/tree/<%= tree.id %>/delete">Delete</a>
-        <% } %>
-      </li>
-    <% } %>
-  </ul>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Tree Name</th>
+        <th>Access Level</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (let tree of coaches) { %>
+        <tr>
+          <td><%= tree.tree_name %></td>
+          <td><%= tree.access_level %></td>
+          <td>
+            <% if (tree.access_level === 'view') { %>
+              <a href="/tree/<%= tree.id %>/view" class="btn btn-primary">View</a>
+            <% } else if (tree.access_level === 'edit') { %>
+              <a href="/createRelationship" class="btn btn-warning">Edit</a>
+              <a href="/tree/<%= tree.id %>/delete" class="btn btn-danger">Delete</a>
+            <% } %>
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
 
  
 </body>

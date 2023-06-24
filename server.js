@@ -36,7 +36,7 @@ connection.connect((err) => {
       return;
     }
     console.log('Connected to the database!');
-    // Perform database operations here
+    
   });
 
   const query = 'SELECT * FROM users';
@@ -47,15 +47,11 @@ connection.connect((err) => {
       return;
     }
 
-    
-  
-    // Format the results as an array of user objects
   users = results.map(row => ({
       id: row.id,
       email: row.email,
       name: row.first_name + " " + row.last_name,
       password: row.password
-      // Add more properties as needed
     }));
   });
 
@@ -243,8 +239,8 @@ app.get('/createRelationship', (req, res) => {
   session.run(query)
     .then(result => {
       const people = result.records.map(record => record.get('n').properties);
-      console.log(people);
-      res.render('createRelationship.ejs', { people });
+      
+      res.render('createRelationship.ejs', { people});
     })
     .catch(error => {
       console.error(error);

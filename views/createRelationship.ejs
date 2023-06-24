@@ -1,59 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Family Members</title>
-  <style>
-    .member-block {
-      display: inline-block;
-      width: 200px;
-      height: 100px;
-      background-color: lightblue;
-      margin: 10px;
-      text-align: center;
-      line-height: 100px;
-      cursor: pointer;
-    }
-  </style>
+  <title>Create Relationship</title>
 </head>
+<script>
+  
+var names = <%- JSON.stringify(people) %>
+console.log(names); // Debugging
+</script>
+
 <body>
-  <h1>Family Members</h1>
-  
-  <% people.forEach(function(member) { %>
-    <div class="member-block" data-member-id="<%= member.id %>" onclick="createRelationship('<%= member.id %>')">
-      <%= member.name %>
-    </div>
-  <% }); %>
-  
+  <h1>Create Relationship</h1>
+
+  <form id="relationship-form">
+    <label for="person">Person:</label>
+    <select id="person">
+     
+    </select>
+
+    <label for="relationship-type">Relationship Type:</label>
+    <select id="relationship-type">
+      <option value="parent">Parent</option>
+      <option value="spouse">Spouse</option>
+      <option value="sibling">Sibling</option>
+    </select>
+
+    <label for="related-person">Related Person:</label>
+    <select id="related-person">
+      <% people.forEach(function(member) { %>
+        <option value="<%= member.id %>"><%= member.name %></option>
+      <% }); %>
+    </select>
+
+    <button type="submit">Create Relationship</button>
+  </form>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script>
-    function createRelationship(memberId) {
-      var selectedMembers = [];
-      var blocks = document.getElementsByClassName("member-block");
-      
-      // Find the selected blocks and push their member IDs to the array
-      for (var i = 0; i < blocks.length; i++) {
-        if (blocks[i].classList.contains("selected")) {
-          selectedMembers.push(blocks[i].getAttribute("data-member-id"));
-        }
-      }
-      
-      // Add or remove the "selected" class on click
-      var selectedBlock = document.querySelector("[data-member-id='" + memberId + "']");
-      if (selectedBlock.classList.contains("selected")) {
-        selectedBlock.classList.remove("selected");
-      } else {
-        selectedBlock.classList.add("selected");
-      }
-      
-      // If two members are selected, prompt for the relationship type
-      if (selectedMembers.length === 2) {
-        var relationshipType = prompt("Enter the relationship type:");
-        if (relationshipType) {
-          // Send a request to create the relationship with the selected members and relationship type
-          var url = "/createRelationship?member1=" + selectedMembers[0] + "&member2=" + selectedMembers[1] + "&relationship=" + relationshipType;
-          window.location.href = url;
-        }
-      }
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+      var selectElement = document.getElementById('person');
+
+  names.forEach(function(member) {
+    var optionElement = document.createElement('option');
+    optionElement.value = member.name;
+    optionElement.text = member.name;
+    selectElement.appendChild(optionElement);
+  });
+
+  selectElement.addEventListener('change', function() {
+    var selectedPersonId = selectElement.value;
+    console.log(selectedPersonId);
+  });
+      // Handle form submission
+      document.getElementById('relationship-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var personId = document.getElementById('person').value;
+        var relationshipType = document.getElementById('relationship-type').value;
+        var relatedPersonId = document.getElementById('related-person').value;
+
+        // console.log(<%- JSON.stringify(people) %>); // Debugging
+
+        // // Create the relationship in Neo4j using a Cypher query
+        // var query = `
+        //   MATCH (p1:Person), (p2:Person)
+        //   WHERE ID(p1) = ${personId} AND ID(p2) = ${relatedPersonId}
+        //   CREATE (p1)-[:${relationshipType.toUpperCase()}]->(p2)
+        // `;
+
+        // axios.post('/createRelationship', { query: query })
+        //   .then(function(response) {
+        //     console.log('Relationship created successfully.');
+        //   })
+        //   .catch(function(error) {
+        //     console.log(error);
+        //   });
+      });
+    });
   </script>
 </body>
 </html>
