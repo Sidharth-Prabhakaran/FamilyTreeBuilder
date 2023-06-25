@@ -1,4 +1,23 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Relationship Input</title>
+</head>
+<!-- use page.css from css folder -->
+<link rel="stylesheet" type="text/css" href="/css/page.css">
+<body>
+  <div class="navbar">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/profile">Your Trees</a></li>
+        <li><a href="/createTree">Create Tree</a></li>
+      <li>
+        <form class="logout-form" action="/logout?_method=DELETE" method="post">
+          <button type="submit" class="logout-button">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </div>
 <form method="POST" action="/createRelationship">
   <div>
     <label for="person">Family Tree Name:</label>
@@ -32,3 +51,5 @@
   <% } %>
  
 </form>
+</body>
+</html>

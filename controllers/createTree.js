@@ -38,10 +38,8 @@ async function createTreePostFunc(req, res) {
                 console.error('Error creating starting node in Neo4j:', error);
                 res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
               } finally {
-                // connection.end();
                  await ses.close();
               }
-              // res.redirect('/createTree');
             }
           });
         }

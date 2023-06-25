@@ -46,18 +46,28 @@
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/profile">Your Trees</a></li>
-        <li><a href="/createTree">Create Tree</a></li>
-      <li>
-        <form class="logout-form" action="/logout?_method=DELETE" method="post">
-          <button type="submit">Logout</button>
-        </form>
-      </li>
-    </ul>
-  </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-success">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Home(&#x1F3E0;) </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">Your Trees (&#x1F332;)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/createTree">Create Tree <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/createRelationship">Create Relationship</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <h1>Below are The Trees with their appropriate access</h1>
   <table class="table">
     <thead>

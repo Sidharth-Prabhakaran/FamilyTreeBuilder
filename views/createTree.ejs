@@ -15,7 +15,7 @@
     }
 
     form {
-      max-width: 300px;
+      max-width: 400px;
       margin: 20px auto;
       padding: 20px;
       background-color: #fff;
@@ -56,6 +56,8 @@
       color: red;
       margin-top: 10px;
     }
+
+    /* Navbar Styles */
     .navbar {
       background-color: #333;
       padding: 10px;
@@ -86,30 +88,29 @@
       border-radius: 5px;
     }
 
-    .logout-form {
-      display: inline-block;
+    /* Responsive Navbar */
+    @media (max-width: 600px) {
+      .navbar ul {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .navbar li {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
     }
-    .logout-button {
-      padding: 10px;
-      background-color: #ccc;
-      border-radius: 5px;
-}
-    
   </style>
 </head>
 <body>
-  <div class="navbar">
+  <nav class="navbar">
     <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/profile">Your Trees</a></li>
-        <li><a href="/createTree">Create Tree</a></li>
-      <li>
-        <form class="logout-form" action="/logout?_method=DELETE" method="post">
-          <button type="submit" class="logout-button">Logout</button>
-        </form>
-      </li>
+      <li><a href="/">Home(&#x1F3E0;)</a></li>
+      <li><a href="/profile">Your Trees (&#x1F332;)</a></li>
+      <li><a class="active"  href="/createTree">Create Tree</a></li>
+      <li><a href="/createRelationship">Create Relationship</a></li>
     </ul>
-  </div>
+  </nav>
   <h1>Create Family Tree</h1>
   <form method="POST" action="/createTree">
     <div>

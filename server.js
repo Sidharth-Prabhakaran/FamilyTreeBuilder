@@ -23,7 +23,7 @@ initializePassport(passport, email => users.find(user => user.email === email), 
 
 var mysql = require('mysql');
 const createRelationshipFunc = require('./controllers/createRelationship');
-const createRelationshipGetFunc = require('./controllers/createRelationship');
+const createRelationshipGetFunc = require('./controllers/createRelationshipGet');
 const createTreePostFunc = require('./controllers/createTree');
 const createFamPostFunc = require('./controllers/createFamily');
 const registerPostFunc = require('./controllers/register');
@@ -71,6 +71,7 @@ connection.connect((err) => {
 
 
 app.set('view engine', 'ejs');
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }) );
 app.use(flash());
 app.use(session({
@@ -92,14 +93,21 @@ app.get('/', checkAuthenticated, (req, res) => {
   });
 
 
-app.get('/profile', checkAuthenticated, (req, res) => {
-
-  connection.query('select tree_name,access_level from user_trees where user_id = ?', [req.user.id], function (error, results, fields) {
-    if (error) throw error;
-    coaches = results;
-    console.log(coaches);})
-    res.render('profile.ejs', { name: req.user.name, coaches: coaches  });
+app.get('/profile', checkAuthenticated, async (req, res) => {
+  try {
+    const results1 = await connection.query('SELECT tree_name, access_level FROM user_trees WHERE user_id = ?', [req.user.id], function(err, results, fields){ 
+      if(err) throw err;
+      console.log(results);
+      const coaches = results;
+      res.render('profile.ejs', { name: req.user.name, coaches: coaches });
+      
     });
+  } catch (error) {
+    // Handle any errors that occurred during the database query or rendering
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 // ******************************************************************************************************************************
 // Login: Get and Post

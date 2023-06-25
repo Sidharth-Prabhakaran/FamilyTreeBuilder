@@ -7,7 +7,7 @@ async function createRelationshipFunc(req, res) {
     var relatedperson = req.body.relatedperson;
     var relationship = req.body.relationship; 
     var relExists = false;
-  
+    console.log("in the create relationship post function");
     const session1 = driver.session();
     var relQuery = "MATCH (:Person {name:'"+person+"'})<-[r]->(n:Person {name :'"+ relatedperson + "'}) RETURN count(*) > 0 as relExists";
     try{
@@ -21,12 +21,15 @@ async function createRelationshipFunc(req, res) {
       res.status(500).send('Error retrieving people');
     }
     finally{
+      console.log("in the finally block of create relationship post function");
       session1.close();
     }
   
       if(relExists){
         res.render('createRelationship.ejs', { people : req.session.people, errorMessage: 'Relationship already exists'});
+        console.log('Relationship already exists');
       }else{
+        console.log('Creating Relationship');
         const session = driver.session();
         const query = 'MATCH (a:Person),(b:Person) WHERE a.name = $person AND b.name = $relatedperson CREATE (a)-[r:' + relationship + ']->(b)';
         const params = { person, relatedperson };
@@ -51,22 +54,7 @@ async function createRelationshipFunc(req, res) {
       }
     }
 
-    async function createRelationshipGetFunc(req, res) {
-        const query = 'match (n:Person {familyName:"Tree1"}) return n';
-        const session = driver.session();
-        session.run(query)
-          .then(result => {
-            const people = result.records.map(record => record.get('n').properties);
-            req.session.people = people;
-            
-            res.render('createRelationship.ejs', { people});
-          })
-          .catch(error => {
-            console.error(error);
-            res.status(500).send('Error retrieving people');
-          })
-          .finally(() => session.close());
-      }
+    
 
     module.exports = createRelationshipFunc;
-    module.exports =  createRelationshipGetFunc;
+    
