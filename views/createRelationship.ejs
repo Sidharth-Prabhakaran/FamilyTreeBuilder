@@ -1,82 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Create Relationship</title>
-</head>
-<script>
-  
-var names = <%- JSON.stringify(people) %>
-console.log(names); // Debugging
-</script>
 
-<body>
-  <h1>Create Relationship</h1>
-
-  <form id="relationship-form">
-    <label for="person">Person:</label>
-    <select id="person">
-     
+<form method="POST" action="/createRelationship">
+  <div>
+    <label for="person">Family Tree Name:</label>
+    <!-- create a drop down with values from names -->
+    <select name="person">
+      
+      <% for (var i = 0; i < people.length; i++) { %>
+        <option value="<%= people[i].name %>"><%= people[i].name %></option>
+      <% } %>
     </select>
-
-    <label for="relationship-type">Relationship Type:</label>
-    <select id="relationship-type">
-      <option value="parent">Parent</option>
-      <option value="spouse">Spouse</option>
-      <option value="sibling">Sibling</option>
+    <br><br>
+    <label for="relationship">Relationship:</label>
+    <select name="relationship">
+      <!-- static values -->
+      <option value="Parent">Parent</option>
+      <option value="Spouse">Spouse</option>
+      <option value="Sibling">Sibling</option>
     </select>
-
-    <label for="related-person">Related Person:</label>
-    <select id="related-person">
-      <% people.forEach(function(member) { %>
-        <option value="<%= member.id %>"><%= member.name %></option>
-      <% }); %>
+    <br><br>
+    <label for="relatedperson">Family Tree Name:</label>
+    <!-- create a drop down with values from names -->
+    <select name="relatedperson">
+      <% for (var i = 0; i < people.length; i++) { %>
+        <option value="<%= people[i].name %>"><%= people[i].name %></option>
+      <% } %>
     </select>
-
-    <button type="submit">Create Relationship</button>
-  </form>
-
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var selectElement = document.getElementById('person');
-
-  names.forEach(function(member) {
-    var optionElement = document.createElement('option');
-    optionElement.value = member.name;
-    optionElement.text = member.name;
-    selectElement.appendChild(optionElement);
-  });
-
-  selectElement.addEventListener('change', function() {
-    var selectedPersonId = selectElement.value;
-    console.log(selectedPersonId);
-  });
-      // Handle form submission
-      document.getElementById('relationship-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        var personId = document.getElementById('person').value;
-        var relationshipType = document.getElementById('relationship-type').value;
-        var relatedPersonId = document.getElementById('related-person').value;
-
-        // console.log(<%- JSON.stringify(people) %>); // Debugging
-
-        // // Create the relationship in Neo4j using a Cypher query
-        // var query = `
-        //   MATCH (p1:Person), (p2:Person)
-        //   WHERE ID(p1) = ${personId} AND ID(p2) = ${relatedPersonId}
-        //   CREATE (p1)-[:${relationshipType.toUpperCase()}]->(p2)
-        // `;
-
-        // axios.post('/createRelationship', { query: query })
-        //   .then(function(response) {
-        //     console.log('Relationship created successfully.');
-        //   })
-        //   .catch(function(error) {
-        //     console.log(error);
-        //   });
-      });
-    });
-  </script>
-</body>
-</html>
+  </div>
+  <button type="submit">Create Relationship</button>
+  <% if (typeof errorMessage !== 'undefined') { %>
+    <p class="error"><%= errorMessage %></p>
+  <% } %>
+ 
+</form>
