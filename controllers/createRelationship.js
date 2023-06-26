@@ -40,7 +40,7 @@ async function createRelationshipFunc(req, res) {
           .then(() => {
             session.close();
             console.log('Relationship created');
-            res.render('createRelationship.ejs', { people : req.session.people, errorMessage: 'Relationship Has Been Created'});
+            res.render('createRelationship.ejs', { people : req.session.people, errorMessage: 'Relationship Has Been Created'  });
           })
           .catch(error => {
             console.error(error);

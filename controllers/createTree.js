@@ -28,7 +28,7 @@ async function createTreePostFunc(req, res) {
               res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
             } else {
               req.session.familyName = treeName;
-              res.redirect('/createfamily');
+              res.redirect('/createfamily/'+treeName);
               
             //   const ses = driver.session();
             //   try {

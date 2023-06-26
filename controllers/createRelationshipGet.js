@@ -13,7 +13,7 @@ async function createRelationshipGetFunc(req, res) {
         const people = result.records.map(record => record.get('n').properties);
         req.session.people = people;
         
-        res.render('createRelationship.ejs', { people});
+        res.render('createRelationship.ejs', { people, tree_name: treeName});
       })
       .catch(error => {
         console.error(error);

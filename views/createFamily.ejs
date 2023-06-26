@@ -2,9 +2,20 @@
 <html>
 <head>
   <title>Family Member Input</title>
-</head>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <style>
+    .container {
+      display: flex;
+    }
+    .form-container {
+      flex: 1;
+      margin-right: 20px;
+    }
+    .members-container {
+      flex: 1;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -12,19 +23,35 @@
       <li><a href="/">Home(&#x1F3E0;)</a></li>
       <li><a href="/profile">Your Trees (&#x1F332;)</a></li>
       <li><a href="/createTree">Create Tree</a></li>
-      <li><a class="active" href="/createRelationship">Create Relationship</a></li>
+      <!-- <li><a class="active" href="/createRelationship">Create Relationship</a></li> -->
     </ul>
   </nav>
   <h1>Creating Members for Family : <b><i><u><%= tree_name %></u></i></b></h1>
-  <h1>Family Member Input</h1>
-  <form action="/createfamily" method="post">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required><br><br>
-    <label for="dob">Date of Birth:</label>
-    <input type="date" id="dob" name="dob" required><br><br>
-    <input type="submit" value="Submit">
-  </form>
+  
+  <div class="container">
+    <div class="form-container">
+      <h2>Family Member Input</h2>
+      <form action="/createfamily" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required><br><br>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
 
-  <a href="/createRelationship/<%= tree_name %>"><button>Generate Relationships</button></a>
+    <div class="members-container">
+      <h2>Members of the Tree</h2>
+      <% if (members && members.length > 0) { %>
+        <ul>
+          <% members.forEach(function(member) { %>
+            <li><%= member.name %> - <%= member.dob %></li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>No members yet</p>
+      <% } %> 
+    </div>
+  </div>
 </body>
 </html>

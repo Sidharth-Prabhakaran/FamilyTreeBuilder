@@ -16,7 +16,7 @@ async function createFamPostFunc(req, res) {
       .then(() => {
         session.close();
         console.log('Node created');
-        res.redirect('/createfamily');
+        res.redirect('/createfamily/'+familyName);
       })
       .catch(error => {
         console.error(error);

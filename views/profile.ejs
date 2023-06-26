@@ -10,7 +10,7 @@
       <li><a href="/">Home(&#x1F3E0;)</a></li>
       <li><a class="active" href="/profile">Your Trees (&#x1F332;)</a></li>
       <li><a href="/createTree">Create Tree</a></li>
-      <li><a href="/createRelationship">Create Relationship</a></li>
+      <!-- <li><a href="/createRelationship">Create Relationship</a></li> -->
     </ul>
   </nav>
   <h1>Below are The Trees with their appropriate access</h1>
@@ -34,7 +34,7 @@
               <a href="/tree/<%= tree.id %>/view" class="btn btn-primary">View</a>
             <% } else if (tree.access_level === 'edit') { %>
               
-              <td><a href="/createFamily" class="btn btn-warning">View</a></td>
+              <td><a href="/createFamily/<%= tree.tree_name %>" class="btn btn-warning">View</a></td>
               <td><a href="/createFamily/<%= tree.tree_name %>" class="btn btn-warning">Add</a></td>
               <td><a href="/createRelationship/<%= tree.tree_name %>" class="btn btn-warning">Edit</a></td>
               <td><a href="/deleteTree/<%= tree.tree_name %>" class="btn btn-danger">Delete</a></td>

@@ -29,6 +29,8 @@ const createTreePostFunc = require('./controllers/createTree');
 const createFamPostFunc = require('./controllers/createFamily');
 const registerPostFunc = require('./controllers/register');
 const deleteTreePostFunc = require('./controllers/deleteTreePost');
+const getMembersFunc = require('./controllers/getMmebers');
+const { get } = require('http');
 
 
 var connection = mysql.createConnection({
@@ -167,13 +169,14 @@ function checkNotAuthenticated(req, res, next){
 // CreateFamily: Get and Post
 // ******************************************************************************************************************************
 app.get('/createfamily', checkAuthenticated,(req, res) => {
-   res.render('createFamily.ejs',{tree_name: req.session.familyName});
+   res.render('createFamily.ejs',{tree_name: req.session.familyName });
 });
 
-app.get('/createfamily/:family_name', checkAuthenticated,(req, res) => {
-  console.log(req.params.family_name);
+app.get('/createfamily/:family_name', checkAuthenticated,async (req, res) => {
+  console.log(req.session.people);
   req.session.familyName = req.params.family_name;
-  res.render('createFamily.ejs',{tree_name: req.session.familyName} );
+  // console.log(getMembersFunc(req.params.family_name)  );
+  res.render('createFamily.ejs',{tree_name: req.session.familyName , members : await getMembersFunc(req.params.family_name)} );
 });
 
 app.post('/createfamily', createFamPostFunc);
@@ -202,7 +205,14 @@ app.get('/createRelationship/:tree_name', checkAuthenticated,createRelationshipG
 
 app.post('/createRelationship', checkAuthenticated,createRelationshipFunc);
 
+// ******************************************************************************************************************************
+// Get detaild of all members of a tree from neo4j
+// ******************************************************************************************************************************
+
+
+
+
+
 
 app.listen(3000);
 
-// Arun's Branch
