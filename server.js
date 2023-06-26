@@ -9,6 +9,7 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride= require('method-override');
+const path = require('path');
 
 let users = [];
 const bodyParser = require('body-parser');
@@ -72,7 +73,7 @@ connection.connect((err) => {
 
 
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: false }) );
 app.use(flash());
 app.use(session({
@@ -166,13 +167,13 @@ function checkNotAuthenticated(req, res, next){
 // CreateFamily: Get and Post
 // ******************************************************************************************************************************
 app.get('/createfamily', checkAuthenticated,(req, res) => {
-   res.render('createFamily.ejs');
+   res.render('createFamily.ejs',{tree_name: req.session.familyName});
 });
 
 app.get('/createfamily/:family_name', checkAuthenticated,(req, res) => {
   console.log(req.params.family_name);
   req.session.familyName = req.params.family_name;
-  res.render('createFamily.ejs');
+  res.render('createFamily.ejs',{tree_name: req.session.familyName} );
 });
 
 app.post('/createfamily', createFamPostFunc);
@@ -196,6 +197,8 @@ app.post('/deleteTree/:tree_name', checkAuthenticated, deleteTreePostFunc);
 // createRelationship: Get and Post
 // ******************************************************************************************************************************
 app.get('/createRelationship', checkAuthenticated,createRelationshipGetFunc);
+
+app.get('/createRelationship/:tree_name', checkAuthenticated,createRelationshipGetFunc);
 
 app.post('/createRelationship', checkAuthenticated,createRelationshipFunc);
 
