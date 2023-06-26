@@ -9,9 +9,10 @@ async function createRelationshipFunc(req, res) {
     var relExists = false;
     console.log("in the create relationship post function");
     const session1 = driver.session();
-    var relQuery = "MATCH (:Person {name:'"+person+"'})<-[r]->(n:Person {name :'"+ relatedperson + "'}) RETURN count(*) > 0 as relExists";
+    var relQuery = "MATCH (:Person {name:$person})<-[r]->(n:Person {name :$relatedperson}) RETURN count(*) > 0 as relExists";
+    var parameters = {person, relatedperson};
     try{
-      await session1.run(relQuery)
+      await session1.run(relQuery, parameters)
       .then(result => {
         relExists = result.records[0].get('relExists');
         console.log(relExists);
@@ -31,8 +32,8 @@ async function createRelationshipFunc(req, res) {
       }else{
         console.log('Creating Relationship');
         const session = driver.session();
-        const query = 'MATCH (a:Person),(b:Person) WHERE a.name = $person AND b.name = $relatedperson CREATE (a)-[r:' + relationship + ']->(b)';
-        const params = { person, relatedperson };
+        const query = 'MATCH (a:Person),(b:Person) WHERE a.name = $person AND b.name = $relatedperson CREATE (a)-[r:' +relationship  +']->(b)';
+        const params = { person, relatedperson,relationship };
   
         try{
           await session.run(query, params)

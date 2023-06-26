@@ -2,7 +2,8 @@ var neo4j = require('neo4j-driver');
 var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', process.env.NEO4J_PASSWORD));
 
 async function createRelationshipGetFunc(req, res) {
-  const treeName = req.session.familyName;
+  const treeName = req.params.tree_name;
+  console.log('treeName: ' + treeName);
   
     const query = 'match (n:Person {familyName:$treeName}) return n';
     const session = driver.session();
