@@ -1,11 +1,13 @@
 var neo4j = require('neo4j-driver');
-var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'Mother@123'));
+var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', process.env.NEO4J_PASSWORD));
 
 async function createRelationshipGetFunc(req, res) {
-    const query = 'match (n:Person {familyName:"Tree1"}) return n';
+  const treeName = req.session.familyName;
+  
+    const query = 'match (n:Person {familyName:$treeName}) return n';
     const session = driver.session();
     console.log('Getting people');
-    session.run(query)
+    session.run(query,{treeName})
       .then(result => {
         const people = result.records.map(record => record.get('n').properties);
         req.session.people = people;

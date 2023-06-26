@@ -27,6 +27,7 @@ const createRelationshipGetFunc = require('./controllers/createRelationshipGet')
 const createTreePostFunc = require('./controllers/createTree');
 const createFamPostFunc = require('./controllers/createFamily');
 const registerPostFunc = require('./controllers/register');
+const deleteTreePostFunc = require('./controllers/deleteTreePost');
 
 
 var connection = mysql.createConnection({
@@ -168,6 +169,12 @@ app.get('/createfamily', checkAuthenticated,(req, res) => {
    res.render('createFamily.ejs');
 });
 
+app.get('/createfamily/:family_name', checkAuthenticated,(req, res) => {
+  console.log(req.params.family_name);
+  req.session.familyName = req.params.family_name;
+  res.render('createFamily.ejs');
+});
+
 app.post('/createfamily', createFamPostFunc);
 
 // ******************************************************************************************************************************
@@ -177,7 +184,14 @@ app.get('/createTree', checkAuthenticated, (req, res) => {
   res.render('createTree.ejs', { name: req.user.name });
   });
 app.post('/createTree', createTreePostFunc);
+// ******************************************************************************************************************************
+// DeleteTree: Get
+// ******************************************************************************************************************************
+app.get('/deleteTree/:tree_name', checkAuthenticated, (req, res) => {
+  res.render('deleteTree.ejs', { tree_name: req.params.tree_name });
+  });
 
+app.post('/deleteTree/:tree_name', checkAuthenticated, deleteTreePostFunc);
 // ******************************************************************************************************************************
 // createRelationship: Get and Post
 // ******************************************************************************************************************************

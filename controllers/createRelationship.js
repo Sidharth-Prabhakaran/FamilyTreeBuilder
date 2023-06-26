@@ -1,5 +1,5 @@
 var neo4j = require('neo4j-driver');
-var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'Mother@123'));
+var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', process.env.NEO4J_PASSWORD));
 
 async function createRelationshipFunc(req, res) {
 

@@ -3,24 +3,175 @@
 <head>
   <title>Relationship Input</title>
 </head>
-<!-- use page.css from css folder -->
-<link rel="stylesheet" type="text/css" href="/css/page.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .error {
+      color: red;
+      margin-bottom: 10px;
+    }
+
+    form {
+      max-width: 300px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background-color: #333;
+      padding: 10px;
+      color: #fff;
+    }
+
+    .navbar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .navbar li {
+      margin-right: 10px;
+    }
+
+    .navbar li a {
+      display: inline-block;
+      padding: 10px 20px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .navbar li a.active {
+      background-color: #ccc;
+      border-radius: 5px;
+    }
+
+    /* Responsive Navbar */
+    @media (max-width: 600px) {
+      .navbar ul {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .navbar li {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
 <body>
-  <div class="navbar">
+  <nav class="navbar">
     <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/profile">Your Trees</a></li>
-        <li><a href="/createTree">Create Tree</a></li>
-      <li>
-        <form class="logout-form" action="/logout?_method=DELETE" method="post">
-          <button type="submit" class="logout-button">Logout</button>
-        </form>
-      </li>
+      <li><a href="/">Home(&#x1F3E0;)</a></li>
+      <li><a href="/profile">Your Trees (&#x1F332;)</a></li>
+      <li><a href="/createTree">Create Tree</a></li>
+      <li><a class="active" href="/createRelationship">Create Relationship</a></li>
     </ul>
-  </div>
+  </nav>
 <form method="POST" action="/createRelationship">
   <div>
-    <label for="person">Family Tree Name:</label>
+    <label for="person">Person:</label>
     <!-- create a drop down with values from names -->
     <select name="person">
       
@@ -37,14 +188,14 @@
       <option value="Sibling">Sibling</option>
     </select>
     <br><br>
-    <label for="relatedperson">Family Tree Name:</label>
+    <label for="relatedperson">Related Person:</label>
     <!-- create a drop down with values from names -->
     <select name="relatedperson">
       <% for (var i = 0; i < people.length; i++) { %>
         <option value="<%= people[i].name %>"><%= people[i].name %></option>
       <% } %>
     </select>
-  </div>
+  </div><br>
   <button type="submit">Create Relationship</button>
   <% if (typeof errorMessage !== 'undefined') { %>
     <p class="error"><%= errorMessage %></p>

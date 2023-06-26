@@ -1,0 +1,16 @@
+<!-- form to confirm deletion of tree -->
+<DOCTYPE html>
+<html>
+<head>
+  <title>Delete Tree</title>
+</head>
+<body>
+  <h1>Are you sure you want to delete this tree?</h1>
+    <h2>Deleting this tree will delete all of its members and relationships</h2>
+    <h3>Tree Name: <%= tree_name %></h3>
+  <form action="/deleteTree/<%= tree_name %>" method="POST">
+    <button type="submit">Yes</button>
+  </form>
+    <a href="/profile"><button>No</button></a>
+</body>
+</html>

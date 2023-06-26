@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
     database : process.env.RDS_DB_NAME
   });
 var neo4j = require('neo4j-driver');
-var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'Mother@123'));
+var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', process.env.NEO4J_PASSWORD));
 async function createTreePostFunc(req, res) {
     const { treeName } = req.body;
     
@@ -27,19 +27,21 @@ async function createTreePostFunc(req, res) {
               console.error('Error inserting tree name:', error);
               res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
             } else {
+              req.session.familyName = treeName;
+              res.redirect('/createfamily');
               
-              const ses = driver.session();
-              try {
-                 await ses.run('CREATE (n:Tree {name: $treeName})', { treeName });
-                 req.session.familyName = treeName;
+            //   const ses = driver.session();
+            //   try {
+            //      await ses.run('CREATE (n:Tree {name: $treeName})', { treeName });
+            //      req.session.familyName = treeName;
                  
-                res.redirect('/createfamily');
-              } catch (error) {
-                console.error('Error creating starting node in Neo4j:', error);
-                res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
-              } finally {
-                 await ses.close();
-              }
+            //     res.redirect('/createfamily');
+            //   } catch (error) {
+            //     console.error('Error creating starting node in Neo4j:', error);
+            //     res.render('createTree', { errorMessage: 'An error occurred. Please try again.' });
+            //   } finally {
+            //      await ses.close();
+            //   }
             }
           });
         }
