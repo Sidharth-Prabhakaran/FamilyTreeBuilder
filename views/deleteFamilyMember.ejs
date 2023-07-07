@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Relationship Input</title>
+  <title>Delete Relationship</title>
 </head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/css/styles.css">
@@ -15,8 +15,8 @@
       <!-- <li><a class="active" href="/createRelationship">Create Relationship</a></li> -->
     </ul>
   </nav>
-  <h1>Adding Relationships for <%= tree_name %></h1>
-<form method="POST" action="/createRelationship/<%=tree_name%>">
+  <h1>Removing Family Member For <%= tree_name %></h1>
+<form method="POST" action="/deleteFamilyMember/<%= tree_name%>">
   <div>
     <label for="person">Person:</label>
     <!-- create a drop down with values from names -->
@@ -26,31 +26,18 @@
         <option value="<%= people[i].name %>"><%= people[i].name %></option>
       <% } %>
     </select>
-    <br><br>
-    <label for="relationship">Relationship:</label>
-    <select name="relationship">
-      <!-- static values -->
-      <option value="Parent">Parent</option>
-      <option value="Spouse">Spouse</option>
-      <option value="Sibling">Sibling</option>
-    </select>
-    <br><br>
-    <label for="relatedperson">Related Person:</label>
-    <!-- create a drop down with values from names -->
-    <select name="relatedperson">
-      <% for (var i = 0; i < people.length; i++) { %>
-        <option value="<%= people[i].name %>"><%= people[i].name %></option>
-      <% } %>
-    </select>
+
+    <label for = "dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob" required>
+        
   </div><br>
-  <button type="submit">Create Relationship</button>
+  <button type="submit">Remove Person</button>
   <% if (typeof errorMessage !== 'undefined') { %>
     <p class="error"><%= errorMessage %></p>
   <% } %>
   <% if (typeof successMessage !== 'undefined') { %>
     <p class="success"><%= successMessage %></p>
   <% } %>
- 
 </form>
 </body>
 </html>

@@ -11,18 +11,13 @@ const session = require('express-session');
 const methodOverride= require('method-override');
 const path = require('path');
 
-let users = [];
-const bodyParser = require('body-parser');
+
+var users = [];
 
 const initializePassport = require('./passport-config');
 initializePassport(passport, email => users.find(user => user.email === email), id => users.find(user => user.id === id));
 
 
-
-
-
-
-var mysql = require('mysql');
 const createRelationshipFunc = require('./controllers/createRelationship');
 const createRelationshipGetFunc = require('./controllers/createRelationshipGet');
 const createTreePostFunc = require('./controllers/createTree');
@@ -30,47 +25,9 @@ const createFamPostFunc = require('./controllers/createFamily');
 const registerPostFunc = require('./controllers/register');
 const deleteTreePostFunc = require('./controllers/deleteTreePost');
 const getMembersFunc = require('./controllers/getMmebers');
+
 const { get } = require('http');
-
-
-var connection = mysql.createConnection({
-  host     : process.env.RDS_HOSTNAME,
-  user     : process.env.RDS_USERNAME,
-  password : process.env.RDS_PASSWORD,
-//   port     : process.env.RDS_PORT,
-  database : process.env.RDS_DB_NAME
-});
-
-connection.connect((err) => {
-    if (err) {
-      console.error('Error connecting to the database:', err);
-      return;
-    }
-    console.log('Connected to the database!');
-    
-  });
-
-  const query = 'SELECT * FROM users';
-
-  connection.query(query, (error, results, fields) => {
-    if (error) {
-      console.error('Error executing query:', error);
-      return;
-    }
-
-  users = results.map(row => ({
-      id: row.id,
-      email: row.email,
-      name: row.first_name + " " + row.last_name,
-      password: row.password
-    }));
-  });
-
-
-  
- 
-
-
+// const updateUsersFunc = require('./controllers/updateUsers');
 
 
 
@@ -89,6 +46,24 @@ app.use(passport.session());
 app.use(methodOverride('_method'));
 let coaches = [];
 
+var mysql = require('mysql');
+const { getUsersFunc } = require('./controllers/getUsers');
+const editFamilyMembersGetFunc = require('./controllers/editMembersGet');
+const editFamilyMemberPostFunc = require('./controllers/editMemberPost');
+const deleteRelationshipGetFunc = require('./controllers/deleteRelationshipGet');
+const deleteRelationshipPostFunc = require('./controllers/deleteRelationshipPost');
+const deleteFamilyMemberPostFunc = require('./controllers/deleteFamilyMemeberPost');
+  var connection = mysql.createConnection({
+    host     : process.env.RDS_HOSTNAME,
+    user     : process.env.RDS_USERNAME,
+    password : process.env.RDS_PASSWORD,
+  //   port     : process.env.RDS_PORT,
+    database : process.env.RDS_DB_NAME
+  });
+ 
+  
+  refreshUsers(); 
+  
 app.get('/', checkAuthenticated, (req, res) => {
  
   
@@ -116,10 +91,12 @@ app.get('/profile', checkAuthenticated, async (req, res) => {
 // ******************************************************************************************************************************
 // Login: Get and Post
 // ******************************************************************************************************************************
-app.get('/login', checkNotAuthenticated,(req, res) => {
+app.get('/login', checkNotAuthenticated,async (req, res) => {
+  users = await getUsersFunc();
     res.render('login.ejs');
    
     });
+
 
 app.post('/login',checkNotAuthenticated, passport.authenticate('local', {
     successRedirect: '/',
@@ -133,8 +110,11 @@ app.post('/login',checkNotAuthenticated, passport.authenticate('local', {
 app.get('/register',checkNotAuthenticated, (req, res) => {
     res.render('register.ejs');
     });
+// send users with this post request
 
-app.post('/register', checkNotAuthenticated,registerPostFunc);
+app.post('/register', checkNotAuthenticated, (req, res) => {
+  registerPostFunc(req, res, users);
+});
 
 
 // ******************************************************************************************************************************
@@ -163,6 +143,11 @@ function checkNotAuthenticated(req, res, next){
     next();
     }
 
+    async function refreshUsers(){
+      users = await getUsersFunc();
+      return users;
+    }
+
     
 
 // ******************************************************************************************************************************
@@ -181,32 +166,60 @@ app.get('/createfamily/:family_name', checkAuthenticated,async (req, res) => {
 
 app.post('/createfamily', createFamPostFunc);
 
+// *******************************************************************************************************************************
+// EditFamilyMember: Get and Post
+// *******************************************************************************************************************************
+
+app.get( '/editFamilyMember/:tree_name', checkAuthenticated,editFamilyMembersGetFunc);
+app.post('/editFamilyMember/:tree_name', checkAuthenticated,editFamilyMemberPostFunc);
+
 // ******************************************************************************************************************************
 // CreateTree: Get and Post
 // ******************************************************************************************************************************
+
 app.get('/createTree', checkAuthenticated, (req, res) => {
   res.render('createTree.ejs', { name: req.user.name });
   });
+
 app.post('/createTree', createTreePostFunc);
+
 // ******************************************************************************************************************************
 // DeleteTree: Get
 // ******************************************************************************************************************************
+
 app.get('/deleteTree/:tree_name', checkAuthenticated, (req, res) => {
   res.render('deleteTree.ejs', { tree_name: req.params.tree_name });
   });
 
 app.post('/deleteTree/:tree_name', checkAuthenticated, deleteTreePostFunc);
+
 // ******************************************************************************************************************************
 // createRelationship: Get and Post
 // ******************************************************************************************************************************
-app.get('/createRelationship', checkAuthenticated,createRelationshipGetFunc);
 
-app.get('/createRelationship/:tree_name', checkAuthenticated,createRelationshipGetFunc);
+app.get( '/createRelationship',            checkAuthenticated,createRelationshipGetFunc);
+app.get( '/createRelationship/:tree_name', checkAuthenticated,createRelationshipGetFunc);
+app.post('/createRelationship/:tree_name', checkAuthenticated,createRelationshipFunc);
 
-app.post('/createRelationship', checkAuthenticated,createRelationshipFunc);
+// *******************************************************************************************************************************
+// deleteRelationship: Get and Post
+// *******************************************************************************************************************************
+
+app.get( '/deleteRelationship/:tree_name', checkAuthenticated, deleteRelationshipGetFunc );
+app.post('/deleteRelationship/:tree_name', checkAuthenticated, deleteRelationshipPostFunc );
 
 // ******************************************************************************************************************************
-// Get detaild of all members of a tree from neo4j
+// deleteFamilyMember: Get and Post
+// ******************************************************************************************************************************
+
+app.get('/deleteFamilyMember/:tree_name', checkAuthenticated, async (req, res) => {
+  res.render('deleteFamilyMember.ejs', { tree_name: req.params.tree_name , people: await getMembersFunc(req.params.tree_name)}
+  )});
+
+app.post('/deleteFamilyMember/:tree_name', checkAuthenticated, deleteFamilyMemberPostFunc);
+
+// ******************************************************************************************************************************
+// Get details of all members of a tree from neo4j
 // ******************************************************************************************************************************
 
 

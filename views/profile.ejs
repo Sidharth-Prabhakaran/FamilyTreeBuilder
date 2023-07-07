@@ -35,8 +35,15 @@
             <% } else if (tree.access_level === 'edit') { %>
               
               <td><a href="/createFamily/<%= tree.tree_name %>" class="btn btn-warning">View</a></td>
-              <td><a href="/createFamily/<%= tree.tree_name %>" class="btn btn-warning">Add</a></td>
-              <td><a href="/createRelationship/<%= tree.tree_name %>" class="btn btn-warning">Edit</a></td>
+              <td>
+                <a href="/createFamily/<%= tree.tree_name %>" class="btn btn-warning">ADD</a>
+                <a href="/editFamilyMember/<%= tree.tree_name %>" class="btn btn-warning">EDIT</a>
+                <a href="/deleteFamilyMember/<%= tree.tree_name %>" class="btn btn-warning">REMOVE</a>
+              </td>
+              <td>
+                <a href="/createRelationship/<%= tree.tree_name %>" class="btn btn-warning">ADD</a>
+                <a href="/deleteRelationship/<%= tree.tree_name %>" class="btn btn-warning">DELETE</a>
+              </td>
               <td><a href="/deleteTree/<%= tree.tree_name %>" class="btn btn-danger">Delete</a></td>
             <% } %>
           

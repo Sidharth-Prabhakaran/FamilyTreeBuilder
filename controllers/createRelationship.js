@@ -6,11 +6,18 @@ async function createRelationshipFunc(req, res) {
     var person = req.body.person;
     var relatedperson = req.body.relatedperson;
     var relationship = req.body.relationship; 
+    var familyName = req.params.tree_name;
+    if(relatedperson === person){
+      res.render('createRelationship.ejs', {tree_name:req.params.tree_name, people : req.session.people, errorMessage: 'Cannot create relationship with self'});
+      console.log('Cannot create relationship with self');
+      return;
+    }
+
     var relExists = false;
-    console.log("in the create relationship post function");
+    // console.log("in the create relationship post function");
     const session1 = driver.session();
-    var relQuery = "MATCH (:Person {name:$person})<-[r]->(n:Person {name :$relatedperson}) RETURN count(*) > 0 as relExists";
-    var parameters = {person, relatedperson};
+    var relQuery = "MATCH (:Person {name:$person, familyName:$familyName})<-[r]->(n:Person {name :$relatedperson, familyName:$familyName}) RETURN count(*) > 0 as relExists";
+    var parameters = {person, relatedperson,familyName};
     try{
       await session1.run(relQuery, parameters)
       .then(result => {
@@ -22,12 +29,13 @@ async function createRelationshipFunc(req, res) {
       res.status(500).send('Error retrieving people');
     }
     finally{
-      console.log("in the finally block of create relationship post function");
+      // console.log("in the finally block of create relationship post function");
       session1.close();
     }
   
       if(relExists){
-        res.render('createRelationship.ejs', { people : req.session.people, errorMessage: 'Relationship already exists'});
+        var errMessage = 'Relationship already exists between ' + person + ' and ' + relatedperson ;
+        res.render('createRelationship.ejs', { tree_name:req.params.tree_name,people : req.session.people, errorMessage: errMessage});
         console.log('Relationship already exists');
       }else{
         console.log('Creating Relationship');
@@ -40,7 +48,8 @@ async function createRelationshipFunc(req, res) {
           .then(() => {
             session.close();
             console.log('Relationship created');
-            res.render('createRelationship.ejs', { people : req.session.people, errorMessage: 'Relationship Has Been Created'  });
+            var successMsg = person + ' (' + relationship + ') \u2192 ' + relatedperson + ' has been created ' ;
+            res.render('createRelationship.ejs', { tree_name:req.params.tree_name,people : req.session.people, successMessage: successMsg  });
           })
           .catch(error => {
             console.error(error);
