@@ -53,6 +53,7 @@ const editFamilyMemberPostFunc = require('./controllers/editMemberPost');
 const deleteRelationshipGetFunc = require('./controllers/deleteRelationshipGet');
 const deleteRelationshipPostFunc = require('./controllers/deleteRelationshipPost');
 const deleteFamilyMemberPostFunc = require('./controllers/deleteFamilyMemeberPost');
+const inviteMembersPostFunc = require('./controllers/inviteMembersPost');
   var connection = mysql.createConnection({
     host     : process.env.RDS_HOSTNAME,
     user     : process.env.RDS_USERNAME,
@@ -218,11 +219,16 @@ app.get('/deleteFamilyMember/:tree_name', checkAuthenticated, async (req, res) =
 
 app.post('/deleteFamilyMember/:tree_name', checkAuthenticated, deleteFamilyMemberPostFunc);
 
+
+app.get('/invite/:tree_name', checkAuthenticated, (req, res) => {
+  res.render('invite.ejs', { tree_name: req.params.tree_name });
+  });
+
+app.post('/invite/:tree_name', checkAuthenticated,inviteMembersPostFunc);
+
 // ******************************************************************************************************************************
 // Get details of all members of a tree from neo4j
 // ******************************************************************************************************************************
-
-
 
 
 
