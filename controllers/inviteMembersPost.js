@@ -48,25 +48,37 @@ async function inviteMembersPostFunc(req, res) {
         }
       });
     } else {
-      // User does not exist, send an email invitation
-      var text = 'Hello ' + req.body.email + ',\nYou are invited to join ' + req.params.tree_name +
-        ' Tree by ' + req.user.name + '. Please click on the link below to create an account at FamilyTreeBuilder and view the tree. \n\n' +
-        'http://localhost:3000/register \n\n' + 'Thanks, \n' + 'FamilyTreeBuilder Team';
+      // User does not exist, check if the email is already invited
+      connection.query('SELECT * FROM Invited_Users WHERE email = ? AND tree_name = ?', [req.body.email, req.params.tree_name], async function (error, invitedResults, fields) {
+        if (error) {
+          throw error;
+        }
 
-      try {
-        await sendEmail(req.body.email, subject, text);
+        if (invitedResults.length > 0) {
+          // Email is already invited
+          res.render('invite.ejs', { tree_name: req.params.tree_name, errorMessage:  req.body.email + ' has already been invited to this tree' });
+        } else {
+          // User does not exist and email is not invited, send an email invitation
+          var text = 'Hello ' + req.body.email + ',\nYou are invited to join ' + req.params.tree_name +
+            ' Tree by ' + req.user.name + '. Please click on the link below to create an account at FamilyTreeBuilder and view the tree. \n\n' +
+            'http://localhost:3000/register \n\n' + 'Thanks, \n' + 'FamilyTreeBuilder Team';
 
-        connection.query('INSERT INTO Invited_Users (email, tree_name) VALUES (?, ?)', [req.body.email, req.params.tree_name], function (error, results, fields) {
-          if (error) {
-            throw error;
+          try {
+            await sendEmail(req.body.email, subject, text);
+
+            connection.query('INSERT INTO Invited_Users (email, tree_name) VALUES (?, ?)', [req.body.email, req.params.tree_name], function (error, results, fields) {
+              if (error) {
+                throw error;
+              }
+
+              res.render('invite.ejs', { tree_name: req.params.tree_name, successMessage: 'Invite sent to ' + req.body.email + ' successfully' });
+            });
+          } catch (error) {
+            console.log(error);
+            res.render('invite.ejs', { tree_name: req.params.tree_name, errorMessage: 'Failed to send email to ' + req.body.email + ', please try again' });
           }
-
-          res.render('invite.ejs', { tree_name: req.params.tree_name, successMessage: 'Invite sent to ' + req.body.email + ' successfully' });
-        });
-      } catch (error) {
-        console.log(error);
-        res.render('invite.ejs', { tree_name: req.params.tree_name, errorMessage: 'Failed to send email to ' + req.body.email + ', please try again' });
-      }
+        }
+      });
     }
   });
 }

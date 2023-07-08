@@ -28,7 +28,7 @@ async function registerPostFunc(req, res) {
           // Insert user data into the 'users' table
           connection2.query(
             'INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)',
-            ["defaultname", req.body.username, req.body.email, hashedPassword],
+            [req.body.firstName, req.body.lastName, req.body.email, hashedPassword],
             function (error, userResults, fields) {
               if (error) {
                 throw error;

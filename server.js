@@ -54,6 +54,7 @@ const deleteRelationshipGetFunc = require('./controllers/deleteRelationshipGet')
 const deleteRelationshipPostFunc = require('./controllers/deleteRelationshipPost');
 const deleteFamilyMemberPostFunc = require('./controllers/deleteFamilyMemeberPost');
 const inviteMembersPostFunc = require('./controllers/inviteMembersPost');
+const forgotPasswordPostFunc = require('./controllers/forgotPasswordPost');
   var connection = mysql.createConnection({
     host     : process.env.RDS_HOSTNAME,
     user     : process.env.RDS_USERNAME,
@@ -104,6 +105,15 @@ app.post('/login',checkNotAuthenticated, passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true
     }));
+
+// *******************************************************************************************************************************
+//forgot password
+// *******************************************************************************************************************************
+app.get('/forgotPassword', checkNotAuthenticated,async (req, res) => {
+    res.render('forgotPassword.ejs');
+    });
+
+app.post('/forgotPassword',checkNotAuthenticated, forgotPasswordPostFunc);
 
 // ******************************************************************************************************************************
 // Register: Get and Post
