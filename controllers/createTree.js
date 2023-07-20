@@ -3,11 +3,11 @@ var connection = mysql.createConnection({
     host     : process.env.RDS_HOSTNAME,
     user     : process.env.RDS_USERNAME,
     password : process.env.RDS_PASSWORD,
-  //   port     : process.env.RDS_PORT,
+    port     : process.env.RDS_PORT,
     database : process.env.RDS_DB_NAME
   });
-var neo4j = require('neo4j-driver');
-var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', process.env.NEO4J_PASSWORD));
+
+
 async function createTreePostFunc(req, res) {
     const { treeName } = req.body;
     

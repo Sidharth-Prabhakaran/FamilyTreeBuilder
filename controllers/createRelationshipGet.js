@@ -1,5 +1,5 @@
 var neo4j = require('neo4j-driver');
-var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', process.env.NEO4J_PASSWORD));
+var driver = neo4j.driver('bolt://neo4j:7687')
 
 async function createRelationshipGetFunc(req, res) {
   const treeName = req.params.tree_name;

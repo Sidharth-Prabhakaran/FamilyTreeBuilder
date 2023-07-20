@@ -69,8 +69,8 @@ async function registerPostFunc(req, res) {
                           if (error) {
                             throw error;
                           }
-
-                          res.render('login', { successMessage: 'Registration successful. You can now log in.' });
+                          
+                          res.render('register', { successMessage: 'Registration successful. You can now log in.' });
                         }
                       );
                     })

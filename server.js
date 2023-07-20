@@ -29,6 +29,21 @@ const getMembersFunc = require('./controllers/getMmebers');
 const { get } = require('http');
 // const updateUsersFunc = require('./controllers/updateUsers');
 
+//check neo4j connection
+// var neo4j = require('neo4j-driver');
+// var driver = neo4j.driver('bolt://neo4j:7687')
+// const session1 = driver.session();
+// query = 'MATCH (n) RETURN n';
+// session1.run(query)
+//   .then(() => {
+//     session1.close();
+//     console.log('Neo4j connected');
+//   })
+//   .catch(error => {
+//     console.error(error);
+//     res.status(500).send('Error connecting to Neo4j');
+//   });
+
 
 
 app.set('view engine', 'ejs');
@@ -44,7 +59,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
-let coaches = [];
 
 var mysql = require('mysql');
 const { getUsersFunc } = require('./controllers/getUsers');
@@ -59,12 +73,22 @@ const forgotPasswordPostFunc = require('./controllers/forgotPasswordPost');
     host     : process.env.RDS_HOSTNAME,
     user     : process.env.RDS_USERNAME,
     password : process.env.RDS_PASSWORD,
-  //   port     : process.env.RDS_PORT,
+    port     : process.env.RDS_PORT,
     database : process.env.RDS_DB_NAME
   });
  
-  
-  refreshUsers(); 
+  connection.connect(function(err) {
+    if (err) throw err;
+    console.log("Connected!");
+  });
+
+  async function getUserData() {
+    const users = await refreshUsers();
+    // console.log(users);
+  }
+
+users = getUserData();
+console.log(users);
   
 app.get('/', checkAuthenticated, (req, res) => {
  
@@ -78,7 +102,7 @@ app.get('/profile', checkAuthenticated, async (req, res) => {
   try {
     const results1 = await connection.query('SELECT tree_name, access_level FROM user_trees WHERE user_id = ?', [req.user.id], function(err, results, fields){ 
       if(err) throw err;
-      console.log(results);
+      // console.log(results);
       const coaches = results;
       res.render('profile.ejs', { name: req.user.name, coaches: coaches });
       
@@ -94,7 +118,10 @@ app.get('/profile', checkAuthenticated, async (req, res) => {
 // Login: Get and Post
 // ******************************************************************************************************************************
 app.get('/login', checkNotAuthenticated,async (req, res) => {
-  users = await getUsersFunc();
+  // users = await getUsersFunc(); 
+  users = getUserData();
+  
+  // console.log(users);
     res.render('login.ejs');
    
     });
@@ -125,6 +152,7 @@ app.get('/register',checkNotAuthenticated, (req, res) => {
 
 app.post('/register', checkNotAuthenticated, (req, res) => {
   registerPostFunc(req, res, users);
+  
 });
 
 
@@ -235,6 +263,14 @@ app.get('/invite/:tree_name', checkAuthenticated, (req, res) => {
   });
 
 app.post('/invite/:tree_name', checkAuthenticated,inviteMembersPostFunc);
+
+// ******************************************************************************************************************************
+// viewTree: Get and Post
+// ******************************************************************************************************************************
+
+app.get('/viewTree/:tree_name', checkAuthenticated, (req, res) => {
+  res.render('viewTree.ejs', { tree_name: req.params.tree_name });
+  });
 
 // ******************************************************************************************************************************
 // Get details of all members of a tree from neo4j

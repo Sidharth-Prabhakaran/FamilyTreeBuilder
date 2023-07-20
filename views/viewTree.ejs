@@ -1,0 +1,120 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>View Trees</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="/">Home(&#x1F3E0;)</a></li>
+      <li><a href="/profile">Your Trees (&#x1F332;)</a></li>
+      <li><a href="/createTree">Create Tree</a></li>
+      <!-- <li><a href="/createRelationship">Create Relationship</a></li> -->
+    </ul>
+  </nav>
+  <h1>Below is Your Family Tree : <%= tree_name %></h1>
+    <style type="text/css">
+        html, body {
+            font: 12pt arial;
+        }
+
+        #viz {
+            /* /* width: 900px; */
+            height: 700px; 
+            border: 1px solid lightgray;
+            font: 22pt arial;
+        }
+
+    </style>
+    
+    <!-- FIXME: load from dist -->
+    <script src="https://cdn.jsdelivr.net/npm/neovis.js/dist/neovis.js"></script>
+
+
+
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+		var treeName = '<%= tree_name %>';
+        console.log(treeName);
+		var viz;
+
+		function draw() {
+			var config = {
+				containerId: "viz",
+				neo4j: {
+					serverUrl: "bolt://localhost:7687",
+					serverUser: "neo4j",
+					// serverPassword: "sorts-swims-burglaries"
+				},
+				visConfig: {
+         nodes: {
+             shape: 'box',
+			 size: 40
+         },
+		 interaction:{
+    dragNodes:true,
+    dragView: false},
+         edges: {
+             arrows: {
+                 to: {enabled: true}
+             },
+			 arrowStrikethrough: true,
+    chosen: true,
+    color: {
+      color:'#848484',
+      highlight:'#e35219',
+      hover: '#e35219',
+      inherit: 'from',
+      opacity:1.0
+    },
+	// shadow: true
+         },
+     },
+				labels: {
+					"Person": {
+						caption :true,
+						label:  "name",
+						// label:"dob"
+						// familyName: "familyName"
+						
+					},
+					function: {
+                     title: (node) => {
+                         return viz.nodeToHtml(node, undefined);
+                     }
+                 },
+				},
+				relationships: {
+                    
+					Parent: {
+						label : "rel_type"	
+					},
+                    Sibling:{
+                        label : "rel_type"	
+                    },
+                    Spouse:{
+                        label:"rel_type"
+                    }
+				},
+				
+				initialCypher: "MATCH (n:Person {familyName: '"+  treeName +"'})-[r]->(m:Person {familyName:'"+  treeName +"'}) RETURN n,m,r "
+			};
+
+			viz = new NeoVis.default(config);
+			viz.render();
+			console.log(viz);
+
+		}
+    </script>
+</head>
+<body onload="draw()">
+<div id="viz"></div>
+
+</html>

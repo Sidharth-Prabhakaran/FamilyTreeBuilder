@@ -1,5 +1,5 @@
 var neo4j = require('neo4j-driver');
-var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', process.env.NEO4J_PASSWORD));
+var driver = neo4j.driver('bolt://neo4j:7687')
 
 async function createRelationshipFunc(req, res) {
 
@@ -40,7 +40,7 @@ async function createRelationshipFunc(req, res) {
       }else{
         console.log('Creating Relationship');
         const session = driver.session();
-        const query = 'MATCH (a:Person),(b:Person) WHERE a.name = $person AND b.name = $relatedperson CREATE (a)-[r:' +relationship  +']->(b)';
+        const query = 'MATCH (a:Person),(b:Person) WHERE a.name = $person AND b.name = $relatedperson CREATE (a)-[r:' +relationship  +'{rel_type: $relationship}]->(b)';
         const params = { person, relatedperson,relationship };
   
         try{
