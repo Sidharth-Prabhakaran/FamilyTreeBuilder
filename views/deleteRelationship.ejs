@@ -19,7 +19,7 @@
 <form method="POST" action="/deleteRelationship/<%= tree_name%>">
   <div>
     <label for="person">Person:</label>
-    <!-- create a drop down with values from names -->
+
     <select name="person">
       
       <% for (var i = 0; i < people.length; i++) { %>
@@ -29,7 +29,6 @@
     
     <br><br>
     <label for="relatedperson">Related Person:</label>
-    <!-- create a drop down with values from names -->
     <select name="relatedperson">
       <% for (var i = 0; i < people.length; i++) { %>
         <option value="<%= people[i].name %>"><%= people[i].name %></option>

@@ -27,22 +27,7 @@ const deleteTreePostFunc = require('./controllers/deleteTreePost');
 const getMembersFunc = require('./controllers/getMmebers');
 
 const { get } = require('http');
-// const updateUsersFunc = require('./controllers/updateUsers');
 
-//check neo4j connection
-// var neo4j = require('neo4j-driver');
-// var driver = neo4j.driver('bolt://neo4j:7687')
-// const session1 = driver.session();
-// query = 'MATCH (n) RETURN n';
-// session1.run(query)
-//   .then(() => {
-//     session1.close();
-//     console.log('Neo4j connected');
-//   })
-//   .catch(error => {
-//     console.error(error);
-//     res.status(500).send('Error connecting to Neo4j');
-//   });
 
 
 
@@ -69,6 +54,7 @@ const deleteRelationshipPostFunc = require('./controllers/deleteRelationshipPost
 const deleteFamilyMemberPostFunc = require('./controllers/deleteFamilyMemeberPost');
 const inviteMembersPostFunc = require('./controllers/inviteMembersPost');
 const forgotPasswordPostFunc = require('./controllers/forgotPasswordPost');
+
   var connection = mysql.createConnection({
     host     : process.env.RDS_HOSTNAME,
     user     : process.env.RDS_USERNAME,
@@ -80,6 +66,7 @@ const forgotPasswordPostFunc = require('./controllers/forgotPasswordPost');
   connection.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
+
   });
 
   async function getUserData() {
@@ -108,7 +95,6 @@ app.get('/profile', checkAuthenticated, async (req, res) => {
       
     });
   } catch (error) {
-    // Handle any errors that occurred during the database query or rendering
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
@@ -148,7 +134,6 @@ app.post('/forgotPassword',checkNotAuthenticated, forgotPasswordPostFunc);
 app.get('/register',checkNotAuthenticated, (req, res) => {
     res.render('register.ejs');
     });
-// send users with this post request
 
 app.post('/register', checkNotAuthenticated, (req, res) => {
   registerPostFunc(req, res, users);
@@ -280,4 +265,6 @@ app.get('/viewTree/:tree_name', checkAuthenticated, (req, res) => {
 
 
 app.listen(3000);
+
+
 
