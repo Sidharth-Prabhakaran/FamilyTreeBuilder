@@ -40,7 +40,7 @@ async function createRelationshipFunc(req, res) {
       }else{
         console.log('Creating Relationship');
         const session = driver.session();
-        const query = 'MATCH (a:Person),(b:Person) WHERE a.name = $person AND b.name = $relatedperson CREATE (a)-[r:' +relationship  +'{rel_type: $relationship}]->(b)';
+        const query = 'MATCH (a:Person),(b:Person) WHERE a.name = $person AND b.name = $relatedperson AND a.familyName = b.familyName CREATE (a)-[r:' +relationship  +'{rel_type: $relationship}]->(b)';
         const params = { person, relatedperson,relationship };
   
         try{

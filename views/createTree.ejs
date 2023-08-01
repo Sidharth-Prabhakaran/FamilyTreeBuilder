@@ -18,12 +18,20 @@
   <form method="POST" action="/createTree">
     <div>
       <label for="treeName">Family Tree Name:</label>
-      <input type="text" id="treeName" name="treeName" placeholder="Enter a unique name" required>
+      <input type="text" id="treeName" name="treeName" placeholder="Enter a unique name. Cannot Use Single quote (')" onkeypress="return validate(event)" required>
     </div>
     <button type="submit">Create Tree</button>
     <% if (typeof errorMessage !== 'undefined') { %>
       <p class="error"><%= errorMessage %></p>
     <% } %>
   </form>
+  <!-- To not accept single quote(') in tree name -->
+  <script>
+    function validate(evt) {
+      var theEvent = evt || window.event;
+      var key = theEvent.keyCode || theEvent.which;
+      return (key != 39)
+    }
+  </script>
 </body>
 </html>
