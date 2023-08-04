@@ -54,6 +54,7 @@ const deleteRelationshipPostFunc = require('./controllers/deleteRelationshipPost
 const deleteFamilyMemberPostFunc = require('./controllers/deleteFamilyMemeberPost');
 const inviteMembersPostFunc = require('./controllers/inviteMembersPost');
 const forgotPasswordPostFunc = require('./controllers/forgotPasswordPost');
+const createTables = require('./controllers/createTables');
 
   var connection = mysql.createConnection({
     host     : process.env.RDS_HOSTNAME,
@@ -66,6 +67,7 @@ const forgotPasswordPostFunc = require('./controllers/forgotPasswordPost');
   connection.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
+    createTables();
 
   });
 
