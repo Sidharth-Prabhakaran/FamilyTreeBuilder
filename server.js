@@ -56,6 +56,12 @@ const inviteMembersPostFunc = require('./controllers/inviteMembersPost');
 const forgotPasswordPostFunc = require('./controllers/forgotPasswordPost');
 const createTables = require('./controllers/createTables');
 
+async function createUsersTable(){
+  await createTables();
+}
+
+await createUsersTable();
+
   var connection = mysql.createConnection({
     host     : process.env.RDS_HOSTNAME,
     user     : process.env.RDS_USERNAME,
@@ -67,10 +73,10 @@ const createTables = require('./controllers/createTables');
   connection.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
-    createTables();
-
   });
 
+  
+   
   async function getUserData() {
     const users = await refreshUsers();
     // console.log(users);
