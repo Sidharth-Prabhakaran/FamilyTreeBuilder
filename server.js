@@ -56,11 +56,9 @@ const inviteMembersPostFunc = require('./controllers/inviteMembersPost');
 const forgotPasswordPostFunc = require('./controllers/forgotPasswordPost');
 const createTables = require('./controllers/createTables');
 
-async function createUsersTable(){
-  await createTables();
-}
 
-await createUsersTable();
+
+
 
   var connection = mysql.createConnection({
     host     : process.env.RDS_HOSTNAME,
@@ -70,21 +68,25 @@ await createUsersTable();
     database : process.env.RDS_DB_NAME
   });
  
-  connection.connect(function(err) {
+  connection.connect(async function(err) {
     if (err) throw err;
     console.log("Connected!");
+    
   });
 
   
    
   async function getUserData() {
     const users = await refreshUsers();
-    // console.log(users);
   }
 
-users = getUserData();
-console.log(users);
-  
+
+ 
+async function createUsersTable(){
+  console.log('creaintg users table');
+  await createTables();
+}
+createUsersTable();
 app.get('/', checkAuthenticated, (req, res) => {
  
   
@@ -269,7 +271,8 @@ app.get('/viewTree/:tree_name', checkAuthenticated, (req, res) => {
 // Get details of all members of a tree from neo4j
 // ******************************************************************************************************************************
 
-
+users = getUserData();
+console.log(users + "users");
 
 
 app.listen(3000);
