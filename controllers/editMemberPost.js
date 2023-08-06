@@ -36,7 +36,7 @@ if(!PersonExists){
   }else{
     
     const session = driver.session();
-    const query = 'MATCH (p:Person {name: $person, dob: $dob, familyName,$familyName})SET p.name = $newname, p.dob = $newdob RETURN p';
+    const query = 'MATCH (p:Person {name: $person, dob: $dob, familyName: $familyName})SET p.name = $newname, p.dob = $newdob RETURN p';
     const params = { person, dob, newname, newdob,familyName};
 
     try{
