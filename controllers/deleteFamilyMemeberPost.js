@@ -1,6 +1,6 @@
 var neo4j = require('neo4j-driver');
 const getMembersFunc = require('./getMmebers');
-var driver = neo4j.driver('bolt://neo4j:7687')
+var driver = neo4j.driver('bolt://localhost:7687')
 
 async function deleteFamilyMemberPostFunc(req, res) {
 
